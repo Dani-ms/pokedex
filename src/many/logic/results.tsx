@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, createContext, ReactNode, useMemo, useContext } from 'react';
+import { throwError } from './throw-error';
 
 type Results = { 
   isLoading?: boolean,
@@ -14,7 +15,12 @@ type Results = {
   }
 }
 
-export function ManyPageResultsProvider(){
+type ResultContextType = {
+  results: Results
+}
+const ResultContext = createContext<ResultContextType | null>(null);
+
+export function ManyPageResultsProvider(props: { children: ReactNode }){
   const [results, setResults] = useState<Results>({ isLoading:false});
 
   useEffect( () => {
@@ -52,23 +58,34 @@ export function ManyPageResultsProvider(){
       
       const responseJSON = await response.json() as {
         count: number,
-        result:Array<{
+        results:Array<{
           name: string,
           url: string
         }>
       }
+
 
       setResults({
         data: {
           limit,
           offset,
           total: responseJSON.count,
-          rows: responseJSON.result
+          rows: responseJSON.results
         }
       })
     })()
 
   }, []);
 
-  return <></>
+  const value = useMemo( () => { 
+    return {results}
+  }, [results])
+
+  return <ResultContext.Provider value={value}>
+    {props.children}
+  </ResultContext.Provider>
+}
+
+export function useManyPageResults(){
+  return useContext(ResultContext) || throwError()
 }
