@@ -16,19 +16,22 @@ type Results = {
 }
 
 type ResultContextType = {
-  results: Results
+  results: Results,
+  setOffset: (offset: number) => void
 }
 const ResultContext = createContext<ResultContextType | null>(null);
 
 export function ManyPageResultsProvider(props: { children: ReactNode }){
   const [results, setResults] = useState<Results>({ isLoading:false});
 
+  const [offset, setOffset] = useState(0);
+
   useEffect( () => {
     (async () => {
+      setResults({ isLoading: true })
       let response: Response;
 
       const limit = 10;
-      const offset = 0;
       
       const urlSearchParams = new URLSearchParams();
       urlSearchParams.append('limit', limit.toString());
@@ -75,10 +78,13 @@ export function ManyPageResultsProvider(props: { children: ReactNode }){
       })
     })()
 
-  }, []);
+  }, [offset]);
 
   const value = useMemo( () => { 
-    return {results}
+    return {
+      results,
+      setOffset
+    }
   }, [results])
 
   return <ResultContext.Provider value={value}>

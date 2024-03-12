@@ -1,10 +1,16 @@
 import { ManyPageResultsProvider, useManyPageResults } from "./logic/results";
+import { Results } from "./components/results";
+import LoadingImg from '../assets/loading.gif'
 
 function _ManyPage() {
-  const { results } = useManyPageResults();
+  const { results, setOffset } = useManyPageResults();
 
+  
   if(results.isLoading) {
-    return
+    return (
+     
+      <img src={LoadingImg} alt= "loading"/>
+    )
   }
 
   if (results.error) {
@@ -14,29 +20,16 @@ function _ManyPage() {
       </div>
     )
   }
-
+  
   if(results.data) {
     return(
-      <>
-      <div>
-        <h1> Pokedex</h1>
-        <ul>
-          <li>
-            {results.data.total}
-          </li>
-          {results.data.rows.map( (row, index) => {
-            return <li key={index}>
-              
-                <a href={row.url}>{row.name}</a>
-              </li>
-            
-          }
-            
-           
-          )}
-        </ul>
-      </div>
-      </>
+      <Results
+      limit={results.data.limit}
+      offset={results.data.offset}
+      total={results.data.total}
+      rows={results.data.rows}
+      setOffset={setOffset}
+      />
     )
   }
 } 
