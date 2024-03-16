@@ -32,6 +32,7 @@ function _ManyPage() {
       />
     )
   }
+    <></>
 } 
 
 export function ManyPage(){
