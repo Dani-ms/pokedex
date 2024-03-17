@@ -26,7 +26,7 @@ export function Results(props: {
         {props.rows.map((row, index) => {
           return (
             <li key={index}>
-              <a href={row.url}>{row.name}</a>
+              <a href={`/${row.name}`}>{row.name}</a>
             </li>
           );
         })}
