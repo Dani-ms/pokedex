@@ -16,11 +16,11 @@ type Details = {
       name: string,
       url: string
     }>,
-    sprites:Array<{
+    sprites: {
       back_default: string,
       back_shiny: string,
       front_default:string
-    }>,
+    },
     base_experience: number,
   }
 }
@@ -60,7 +60,7 @@ export function OnePage(){
       
      
       const responseJSON = await response.json()
-
+      console.log(responseJSON)
       
 
       setDetails({
@@ -70,23 +70,23 @@ export function OnePage(){
 
   },[id]);
 
-  return (
-    <>
-    <div>
-      <h1>Detalhes do item</h1>
-      <ul>
-        {details.data?.sprites.map((item)=> {
-          return(
-            <img src={item.back_default}/>
-           
-          );
-        })}
-        
-        <li>{details.data?.name}</li>
-        <li>{details.data?.height}</li>
-        <li>{details.data?.weight}</li>
-      </ul>
-    </div>
-    </>
-  )
+  if(details.data){
+    return (
+      <>
+      <div>
+        <h1>Detalhes do item</h1>
+        <ul>
+          
+              <img src={details.data.sprites.front_default} alt=''/>
+         
+          <li>{details.data.name}</li>
+          <li>{details.data.height}</li>
+          <li>{details.data.weight}</li>
+        </ul>
+      </div>
+      </>
+    )
+  }
+
+
 }
