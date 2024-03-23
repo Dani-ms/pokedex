@@ -3,8 +3,12 @@
 Simple development with React and TypeScript
   - Integration of API pokeapi
   
+## Install
+- `npm install`
 
 ### Start
 
-- `npm install`
 - `npm run dev`
+
+## Test Development
+- `npm run teste `

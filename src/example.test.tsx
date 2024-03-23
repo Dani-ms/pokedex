@@ -1,25 +1,94 @@
-import { ReactNode } from "react";
-import { render, fireEvent } from '@testing-library/react';
+import { unmountComponentAtNode } from "react-dom";
+import { render,act,screen} from '@testing-library/react';
+//import { act  } from "react-dom/test-utils";
+import App from './App';
+import { ManyPageResultsProvider, useManyPageResults  } from "./many/logic/results";
 
-function Button(props: { className?: string, onClick?: () => void, children: ReactNode }) {
-  return <button className={props.className} onClick={props.onClick}>{props.children}</button>
-}
+let container: HTMLDivElement;
 
-describe('Button component', () => {
-  it('renders with correct text content', () => {
-    const { getByText } = render(<Button>Click me</Button>);
-    expect(getByText('Click me')).toBeInTheDocument();
-  });
 
-  it('calls onClick function when clicked', () => {
-    const onClickMock = jest.fn();
-    const { getByText } = render(<Button onClick={onClickMock}>Click me</Button>);
-    fireEvent.click(getByText('Click me'));
-    expect(onClickMock).toHaveBeenCalled();
-  });
-
-  it('applies custom class name when provided', () => {
-    const { container } = render(<Button className="custom-button">Click me</Button>);
-    expect(container.firstChild).toHaveClass('custom-button');
+beforeEach(() => {
+  // setup a DOM element as a render target
+  container = document.createElement("div");
+  document.body.appendChild(container);
+   
+  global.fetch = jest.fn().mockResolvedValue({
+    status: 200,
+    json: () => Promise.resolve({
+      count: 10,
+      results: [
+        { name: 'bulbasaur', url: 'https://pokeapi.co/api/v2/pokemon/1/' },
+        { name: 'ivysaur', url: 'https://pokeapi.co/api/v2/pokemon/2/' },
+        // Add more mock Pokémon data as needed
+      ],
+    }),
   });
 });
+
+afterEach(() => {
+
+
+  unmountComponentAtNode(container);
+  container.remove();
+});
+
+
+describe('App', () => {
+  it('renders ManyPage when navigating to root URL', async () => {
+    
+  act(() => {
+    render(<App />);
+  });
+  //expect(container.textContent).toBe(" Result Error ");
+  expect(screen.getByText('Result Error')).toBeInTheDocument();
+
+
+  });
+});
+
+describe('ManyPageResultsProvider', () => {
+
+    it("renders user data", async () => {
+    
+    
+
+  
+      act(() => {
+        render(
+          <ManyPageResultsProvider>
+          <MockComponent />
+        </ManyPageResultsProvider>
+        );
+      });
+       
+      // Assert that Pokémon data is rendered
+      
+      //expect(screen.getByText('Loading')).toBeInTheDocument();
+      expect(screen.getByText('bulbasaur')).toBeInTheDocument();
+      expect(screen.getByText('ivysaur')).toBeInTheDocument();
+      // Add more assertions for other Pokémon data as needed
+    });
+    
+      
+     
+ 
+});
+function MockComponent () {
+  const { results } = useManyPageResults();
+
+  if (results.isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (results.error) {
+    return <div>Error: {results.error}</div>;
+  }
+
+  return (
+    <ul>
+      {results?.data?.rows.map(pokemon => (
+        <li key={pokemon.name}>{pokemon.name}</li>
+      ))}
+    </ul>
+  );
+}

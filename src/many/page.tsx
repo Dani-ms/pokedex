@@ -1,6 +1,6 @@
 import { ManyPageResultsProvider, useManyPageResults } from "./logic/results";
 import { Results } from "./components/results";
-import LoadingImg from '../assets/loading.gif'
+import  loadingImg   from '../assets/loading.gif';
 
 function _ManyPage() {
   const { results, setOffset } = useManyPageResults();
@@ -9,7 +9,7 @@ function _ManyPage() {
   if(results.isLoading) {
     return (
      
-      <img src={LoadingImg} alt= "loading"/>
+      <img src={loadingImg} alt= "loading"/>
     )
   }
 
