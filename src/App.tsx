@@ -10,7 +10,7 @@ function App() {
  
   return (
     <>
-    <BrowserRouter>
+    <BrowserRouter basename='/pokedex'>
       <Routes>
         <Route path='/' element={<ManyPage />} />
         <Route path='/:name' element={<OnePage/>} />
