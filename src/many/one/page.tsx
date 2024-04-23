@@ -60,7 +60,7 @@ export function OnePage(){
       
      
       const responseJSON = await response.json()
-      console.log(responseJSON)
+      
       
 
       setDetails({
