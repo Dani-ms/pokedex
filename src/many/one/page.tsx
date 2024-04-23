@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+
 
 type Details = { 
   isLoading?: boolean,
@@ -29,6 +30,7 @@ export function OnePage(){
 
   const [details, setDetails] = useState<Details>({ isLoading:false});
   const { name: id } = useParams<{ name: string }>(); 
+  const navigate = useNavigate();
 
   useEffect( () => {
     (async () => {
@@ -74,14 +76,22 @@ export function OnePage(){
     return (
       <>
       <div>
-        <h1>Detalhes do item</h1>
+        <div className="display-flex center">
+          <button onClick={() => navigate(-1)}>
+            Voltar        
+          </button>
+          <h1>Detalhes do item</h1>
+        </div>
+        
+        
         <ul>
           
-              <img src={details.data.sprites.front_default} alt=''/>
+            <img src={details.data.sprites.front_default} alt={details.data.name} />
          
-          <li>{details.data.name}</li>
-          <li>{details.data.height}</li>
-          <li>{details.data.weight}</li>
+          <h1>{details.data.name}</h1>
+          <p>Height: {details.data.height} kg</p>
+          <p>Weight: {details.data.weight} </p>
+          <p>Experience: {details.data.base_experience} </p>
         </ul>
       </div>
       </>
